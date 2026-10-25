@@ -13,6 +13,11 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/github/v/release/JuliHyro-Studios/cmd.interactive?style=for-the-badge&logo=github&label=Release" alt="GitHub Release">
+  <img src="https://img.shields.io/github/license/JuliHyro-Studios/cmd.interactive?style=for-the-badge&label=License" alt="License">
+</p>
+
+<p align="center">
   <a href="https://github.com/JuliHyro-Studios/cmd.interactive">GitHub Repository</a>
   ·
   <a href="https://github.com/JuliHyro-Studios/cmd.interactive/issues">Report an Issue</a>
@@ -27,4 +32,3 @@
 **CMD Interactive Library** is a C# library for building interactive menu experiences in .NET console applications.
 
 It aims to simplify menu creation and navigation while providing a foundation for reusable, maintainable, and extensible console interfaces.
-
