@@ -1,7 +1,40 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net10.0;net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- Package Metadata -->
+    <PackageId>cmd.Interactive.MenusCore</PackageId>
+    <Version>0.1.0</Version>
+    <Title>cmd.Interactive.MenusCore</Title>
+    <Description>A flexible interactive menu library for .NET console applications, featuring nested menus, navigation, and customizable menu behavior.</Description>
+    <Authors>JuliHyro Studios</Authors>
+    <Company>JuliHyro Studios</Company>
+    <Product>cmd.Interactive.MenusCore</Product>
+
+    <!-- Package Information -->
+    <PackageTags>console;interactive;menu;cli;terminal;navigation;dotnet</PackageTags>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <!-- Repository -->
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/JuliHyro-Studios/cmd.interactive</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/JuliHyro-Studios/cmd.interactive</PackageProjectUrl>
+
+    <!-- NuGet Package -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- Documentation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
