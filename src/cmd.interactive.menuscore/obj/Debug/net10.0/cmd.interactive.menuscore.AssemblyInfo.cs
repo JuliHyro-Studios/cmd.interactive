@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cmd.interactive.menuscore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+502a20c0b1c69477b53336de48cd21365cd5fe82")]
 [assembly: System.Reflection.AssemblyProductAttribute("cmd.interactive.menuscore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cmd.interactive.menuscore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
