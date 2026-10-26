@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src\cmd.interactive.menuscore\cmd.interactive.menuscore.csproj" />
+    <Project Path="src\cmd.interactive.menuscore.test\cmd.interactive.menuscore.test.csproj" />
   </Folder>
 </Solution>

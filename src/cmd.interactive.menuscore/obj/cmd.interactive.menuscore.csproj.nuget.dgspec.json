@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj": {}
+    "C:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj": {}
   },
   "projects": {
-    "c:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj": {
+    "C:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj": {
       "version": "0.1.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj",
+        "projectUniqueName": "C:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj",
         "projectName": "cmd.Interactive.MenusCore",
-        "projectPath": "c:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj",
+        "projectPath": "C:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\cmd.interactive.menuscore.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\obj\\",
+        "outputPath": "C:\\Users\\admin\\Desktop\\HOANG_NUGET_PROJECT\\CMD\\cmd.interactive\\src\\cmd.interactive.menuscore\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [

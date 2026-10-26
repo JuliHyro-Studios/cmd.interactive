@@ -70,3 +70,86 @@ Menus Core is part of the main CMD Interactive Library repository and is maintai
 - **Code of Conduct:** [CODE_OF_CONDUCT.md](https://github.com/JuliHyro-Studios/cmd.interactive/blob/master/CODE_OF_CONDUCT.md)
 
 These policies apply to Menus Core through the main repository. Separate copies are not maintained within this component.
+
+## Quick Start
+
+```csharp
+using cmd.interactive.menuscore.Bus;
+using cmd.interactive.menuscore.Builders;
+using cmd.interactive.menuscore.Discovery;
+using cmd.interactive.menuscore.Enums;
+using cmd.interactive.menuscore.Interactions;
+using cmd.interactive.menuscore.Runtime;
+
+var bus = FrameworksBus.RegisterBus("ExampleClient");
+
+// Declarations can be scoped to a client name so separate buses may reuse IDs.
+MenuBuilder.ParentMenuBuilder()
+    .ForClient("ExampleClient")
+    .ID("menucore")
+    .Title("Main Menu")
+    .SupportChildMenu(true)
+    .MenuSelectionStyle(MenuSelectionStyle.SquareBrackets)
+    .ExtraText("Use the arrow keys to navigate.")
+    .DefaultExitButton(true)
+    .Register();
+
+MenuBuilder.ChildMenuBuilder()
+    .ForClient("ExampleClient")
+    .ChildID("adv")
+    .MenuID("menucore")
+    .Title("Advanced")
+    .MenuSelectionStyle(MenuSelectionStyle.Arrow)
+    .Register();
+
+MenuInteractions.RegisterText()
+    .ForClient("ExampleClient")
+    .ID("menucore")
+    .Text("Open Advanced")
+    .InteractionID("open-advanced")
+    .Register();
+
+MenuInteractions.RegisterInteraction()
+    .ForClient("ExampleClient")
+    .ID("menucore")
+    .InteractionID("open-advanced")
+    .Action(() => bus.Navigation.NavigateTo("menucore.adv"))
+    .Register();
+
+// Discovery is owned by the library; clients do not scan assemblies themselves.
+IMenuDiscovery.StartDiscovery(bus);
+
+bus.PARENT_MENU_REGISTER.register(bus, "menucore");
+bus.CHILD_MENU_REGISTER.register(bus, "menucore.adv");
+bus.INTERACTION_TEXT_REGISTER.register(bus, "open-advanced");
+bus.INTERACTION_REGISTER.register(bus, "open-advanced");
+
+ParentMenu.ShowMenu(bus, "menucore")
+    .ClearConsole(false)
+    .Run();
+```
+
+### Core capabilities
+
+- Isolated `FrameworksBus` instances with separate menu and interaction registries.
+- Parent and nested child menus with dotted full IDs (`menucore.adv.settings`).
+- Library-owned assembly discovery through `IMenuDiscovery.StartDiscovery(bus)`.
+- Separate registration of menu definitions, interaction text, and interaction actions.
+- Public navigation API through `bus.Navigation`: `NavigateTo`, `GoBack`, `GoToParent`, and `GoToRoot`.
+- Per-menu selection styles, custom markers, colors, extra text, and configurable default Exit entries.
+- Optional `ForClient("ClientName")` scoping on builder declarations. Use it when multiple clients in the same process need to declare the same IDs with different definitions.
+
+`ConditionVisible` is evaluated at render time. When it returns `false` (or throws), the entry remains visible in a disabled/dimmed state and cannot be selected.
+
+
+## Default Behavior When `HowToXxx` Is Not Configured
+
+All `HowToXxx` callbacks are optional. Leaving them unconfigured does not disable the library's built-in keyboard behavior.
+
+- **`↑` / `↓`**: Move the current selection up or down, skipping disabled items.
+- **`Enter` / `Space`**: Confirm the currently selected item and execute its registered action.
+- **`Enter` on a child menu item**: Automatically navigate to the child menu. The `InteractionID` can be either the child's full menu ID or its local ID relative to the current menu.
+- **`Backspace`**: Navigate to the parent menu.
+- **`Escape`**: Navigate backward through the navigation history. At the root menu, return to the root and end the session if no further navigation is possible.
+
+Configured callbacks are invoked as extension hooks after their corresponding keyboard operations. They are optional and are not required for the default behaviors to work.
