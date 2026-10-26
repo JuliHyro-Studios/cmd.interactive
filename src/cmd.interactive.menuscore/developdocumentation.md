@@ -384,12 +384,12 @@ The default `Exit` entry is appended when the menu's `DefaultExitButton` option 
 - **Enter / Space**: process the selected entry. The default `Exit` entry ends the display loop. For other entries, the runtime first checks whether the interaction ID resolves to a direct child menu; if so, it invokes `EnterSelection` when configured and navigates to that child. Otherwise, it runs the registered action when found, then invokes the configured `EnterSelection` callback.
 - **Backspace**: calls `GoToParent()`.
 - **Escape**: attempts `GoBack()`. If no history exists, it attempts `GoToRoot()`. If the result is not `Navigated`, the display loop ends.
-- **`HowToSelectionUp` / `HowToSelectionDown`**: the supplied `Action` is executed when the runtime processes the corresponding up/down navigation event.
-- **`HowToSelectSelection`**: the supplied `Action` is executed after the selected entry changes.
-- **`HowToConfirSelection` / `HowToConfirmSelection`**: the supplied `Action` is executed when Space confirms an enabled selected entry. It is a callback hook, not a key-binding API.
-- **`HowToEnterSelection`**: the supplied `Action` is executed when Enter processes the selected entry.
+- **`HowToSelectionUp` / `HowToSelectionDown`**: the configured `Action` runs when the corresponding HowTo signal is raised; a `Case` listener handles the signal and updates the selection.
+- **`HowToSelectSelection`**: the configured `Action` runs when the `Select` signal is raised after navigation.
+- **`HowToConfirSelection` / `HowToConfirmSelection`**: the configured `Action` runs when the `Confirm` signal is raised.
+- **`HowToEnterSelection`**: the configured `Action` runs when the `Enter` signal is raised.
 
-The runtime detects keyboard input and invokes the matching configured callback. The callback body is the behavior to execute when that event occurs; it does not tell the runtime which key should trigger the event. The `HowToXxx` callbacks are optional and do not replace built-in navigation, confirmation, or action execution.
+The runtime uses a small input adapter to raise HowTo signals. Case listeners subscribe to those signals and execute the actual menu behaviour; navigation/confirmation logic is not implemented inside the physical-key switch. `W`/`UpArrow` raise `Up`, `S`/`DownArrow` raise `Down`, `Space`/`Backspace` raise `Confirm`, and `Enter` raises `Enter`. The `Select` signal follows `Up` and `Down`. Help-line icons remain display labels and do not control key recognition.
 
 ## 7. Navigation API
 

@@ -3,10 +3,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/JuliHyro-Studios/cmd.interactive/master/Assets/Brand/banner.png" alt="CMD Interactive Library Banner" width="100%">
 </p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/JuliHyro-Studios/cmd.interactive/master/Assets/Brand/demo.png" alt="Note: This is a demo image from a project, provided for reference purposes only." width="100%">
-  <strong>Note: This is a demo image from a project, provided for reference purposes only</strong>
-</p>
+
 <p align="center">
   <strong>Core Component of CMD Interactive Library</strong>
 </p>
@@ -74,7 +71,7 @@ Menus Core is part of the main CMD Interactive Library repository and is maintai
 
 These policies apply to Menus Core through the main repository. Separate copies are not maintained within this component.
 
-## Quick Start Simple
+## Quick Start
 
 ```csharp
 using cmd.interactive.menuscore.Bus;
@@ -171,6 +168,14 @@ Both `ParentMenuBuilder` and `ChildMenuBuilder` support these fluent APIs:
 
 They customize the icons/labels rendered in the menu help line. They do **not** configure which keyboard keys the runtime listens for. The default help line is built from these values; the `Space Confirm` label remains fixed.
 
-## `HowToXxx` Callback Semantics
+## `HowToXxx` and HowTo Case Dispatch
 
-`HowToSelectionUp`, `HowToSelectionDown`, `HowToSelectSelection`, `HowToConfirSelection` / `HowToConfirmSelection`, and `HowToEnterSelection` accept `Action` callbacks. The runtime handles keyboard input and invokes the matching callback when that event occurs. Put the behavior you want executed inside the callback. These callbacks are event hooks, not key-binding declarations, and they do not replace the built-in menu behavior.
+The runtime separates physical input recognition from menu behaviour. The input adapter translates supported keys into HowTo signals; the `Case` listeners subscribe to those signals and perform the menu operation. The menu operation is not implemented inside the physical-key cases.
+
+- `UpArrow` or `W` emits `Up`; its listener moves the selection up.
+- `DownArrow` or `S` emits `Down`; its listener moves the selection down.
+- `Space` or `Backspace` emits `Confirm`; its listener confirms the current enabled entry.
+- `Enter` emits `Enter`; its listener processes the confirmed entry, navigates to a child menu, or executes its registered action.
+- After `Up` or `Down`, the runtime emits `Select`; its listener invokes `HowToSelectSelection`.
+
+The configured `HowTo...` `Action` runs as the HowTo signal is raised, and the corresponding case listener then handles the signal. These callbacks are not keyboard-binding declarations; help-line icons only change displayed labels.

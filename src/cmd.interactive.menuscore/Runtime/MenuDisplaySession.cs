@@ -49,6 +49,7 @@ public sealed class MenuDisplaySession
         var selectedIndices = new Dictionary<string, int>(StringComparer.Ordinal);
         var confirmedIndices = new Dictionary<string, int>(StringComparer.Ordinal);
         string? renderedMenuId = null;
+        var shouldExit = false;
 
         while (navigation.CurrentMenu is { } menu)
         {
@@ -113,110 +114,95 @@ Render(menu, options, entries, index, renderConfirmedIndex);
             if (entries.Count == 0)
                 continue;
 
+            // The key adapter only raises HowTo signals. Behaviour is handled by listeners
+            // registered below, so physical keys never perform menu operations directly.
+            var howTo = new HowToDispatcher();
+
+            howTo.Listen(HowToEvent.Up, () =>
+            {
+                index = FindEnabled(entries, index - 1, -1);
+                selectedIndices[menu.Id] = index;
+                confirmedIndices.Remove(menu.Id);
+            });
+            howTo.Listen(HowToEvent.Down, () =>
+            {
+                index = FindEnabled(entries, index + 1, 1);
+                selectedIndices[menu.Id] = index;
+                confirmedIndices.Remove(menu.Id);
+            });
+            howTo.Listen(HowToEvent.Select, () => options.SelectionChanged?.Invoke());
+            howTo.Listen(HowToEvent.Confirm, () =>
+            {
+                if (index < 0 || index >= entries.Count || !entries[index].Enabled)
+                    return;
+
+                confirmedIndices[menu.Id] = index;
+                selectedIndices[menu.Id] = index;
+                Console.ForegroundColor = ParseColor(menu.Style.ConfirmColor, ConsoleColor.Green);
+                try { /* HowTo callback already ran before the signal was delivered. */ }
+                finally { Console.ResetColor(); }
+            });
+            howTo.Listen(HowToEvent.Enter, () =>
+            {
+                if (index < 0 || index >= entries.Count || !entries[index].Enabled)
+                    return;
+                if (!confirmedIndices.TryGetValue(menu.Id, out var confirmedIndex) || confirmedIndex != index)
+                {
+                    confirmedIndices.Remove(menu.Id);
+                    return;
+                }
+
+                confirmedIndices.Remove(menu.Id);
+                selectedIndices[menu.Id] = index;
+                var entry = entries[index];
+                if (entry.IsExit)
+                {
+                    if (navigation.GoToParent() == cmd.interactive.menuscore.Enums.MenuNavigationResult.AlreadyAtRoot)
+                        shouldExit = true;
+                    return;
+                }
+
+                var childMenuId = ResolveChildMenuId(menu.Id, entry.InteractionId);
+                if (childMenuId is not null)
+                {
+                    navigation.NavigateTo(childMenuId);
+                    return;
+                }
+
+                if (_bus.INTERACTION_REGISTER.TryGet(menu.Id, entry.InteractionId, out var interaction) && interaction is not null)
+                    interaction.Action();
+            });
+
+            void Raise(HowToEvent signal, Action? configuredAction)
+            {
+                // HowTo runs its configured Action, then emits a signal. The Case listener
+                // responds to the signal; it does not inspect the physical key.
+                howTo.Trigger(signal, configuredAction);
+            }
+
             switch (key)
             {
                 case ConsoleKey.UpArrow:
-                    index = FindEnabled(entries, index - 1, -1);
-                    selectedIndices[menu.Id] = index;
-                    confirmedIndices.Remove(menu.Id);
-
-                    options.SelectionUp?.Invoke();
-                    options.SelectionChanged?.Invoke();
+                case ConsoleKey.W:
+                    Raise(HowToEvent.Up, options.SelectionUp);
+                    Raise(HowToEvent.Select, null);
                     break;
-
                 case ConsoleKey.DownArrow:
-                    index = FindEnabled(entries, index + 1, 1);
-                    selectedIndices[menu.Id] = index;
-                    confirmedIndices.Remove(menu.Id);
-
-                    options.SelectionDown?.Invoke();
-                    options.SelectionChanged?.Invoke();
+                case ConsoleKey.S:
+                    Raise(HowToEvent.Down, options.SelectionDown);
+                    Raise(HowToEvent.Select, null);
                     break;
-
                 case ConsoleKey.Spacebar:
-                    if (index < 0 ||
-                        index >= entries.Count ||
-                        !entries[index].Enabled)
-                    {
-                        break;
-                    }
-
-                    // Phase 1: confirm the currently selected entry.
-                    confirmedIndices[menu.Id] = index;
-                    selectedIndices[menu.Id] = index;
-
-                    Console.ForegroundColor = ParseColor(
-                        menu.Style.ConfirmColor,
-                        ConsoleColor.Green);
-
-                    try
-                    {
-                        options.ConfirmSelection?.Invoke();
-                    }
-                    finally
-                    {
-                        Console.ResetColor();
-                    }
-
+                case ConsoleKey.Backspace:
+                    Raise(HowToEvent.Confirm, options.ConfirmSelection);
                     break;
-
                 case ConsoleKey.Enter:
-                    if (index < 0 ||
-                        index >= entries.Count ||
-                        !entries[index].Enabled)
-                    {
-                        break;
-                    }
-
-                    // Phase 2: only execute the entry confirmed by Backspace.
-                    if (!confirmedIndices.TryGetValue(menu.Id, out var confirmedIndex))
-    break;
-
-if (confirmedIndex != index)
-{
-    confirmedIndices.Remove(menu.Id);
-    break;
-}
-
-                    confirmedIndices.Remove(menu.Id);
-                    selectedIndices[menu.Id] = index;
-
-                    var entry = entries[index];
-
-                    if (entry.IsExit)
-                    {
-                        if (navigation.GoToParent() ==
-                            cmd.interactive.menuscore.Enums.MenuNavigationResult.AlreadyAtRoot)
-                        {
-                            return;
-                        }
-
-                        break;
-                    }
-
-                    var childMenuId = ResolveChildMenuId(
-                        menu.Id,
-                        entry.InteractionId);
-
-                    if (childMenuId is not null)
-                    {
-                        options.EnterSelection?.Invoke();
-                        navigation.NavigateTo(childMenuId);
-                        break;
-                    }
-
-                    if (_bus.INTERACTION_REGISTER.TryGet(
-                            menu.Id,
-                            entry.InteractionId,
-                            out var interaction) &&
-                        interaction is not null)
-                    {
-                        interaction.Action();
-                    }
-
-                    options.EnterSelection?.Invoke();
+                    Raise(HowToEvent.Enter, options.EnterSelection);
                     break;
             }
+
+            if (shouldExit)
+                return;
         }
     }
 
@@ -364,6 +350,31 @@ private static void Render(
         => Enum.TryParse<ConsoleColor>(value, true, out var color)
             ? color
             : fallback;
+
+    private enum HowToEvent { Up, Down, Confirm, Select, Enter }
+
+    /// <summary>Publishes HowTo signals to registered Case listeners.</summary>
+    private sealed class HowToDispatcher
+    {
+        private readonly Dictionary<HowToEvent, List<Action>> _listeners = new();
+
+        public void Listen(HowToEvent signal, Action listener)
+        {
+            if (!_listeners.TryGetValue(signal, out var listeners))
+                _listeners[signal] = listeners = new List<Action>();
+            listeners.Add(listener);
+        }
+
+        public void Trigger(HowToEvent signal, Action? howToAction)
+        {
+            // A configured HowTo action is the signal source. Once it reacts, listeners
+            // registered for that HowTo case execute the associated runtime behaviour.
+            howToAction?.Invoke();
+            if (_listeners.TryGetValue(signal, out var listeners))
+                foreach (var listener in listeners.ToArray())
+                    listener();
+        }
+    }
 
     private sealed record RuntimeEntry(
         string Text,

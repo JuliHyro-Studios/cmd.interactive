@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("A flexible interactive menu library for .NET console applications, featuring nest" +
     "ed menus, navigation, and customizable menu behavior."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("0.1.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0+b138eceec8c2c1e40d4321a4892725faf4fcafa7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0+61d93cb74c9f177c320d9adc4daa45a5b2f2b122")]
 [assembly: System.Reflection.AssemblyProductAttribute("cmd.Interactive.MenusCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cmd.interactive.menuscore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("0.1.0.0")]
