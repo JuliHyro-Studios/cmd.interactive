@@ -74,7 +74,7 @@ Menus Core is part of the main CMD Interactive Library repository and is maintai
 
 These policies apply to Menus Core through the main repository. Separate copies are not maintained within this component.
 
-## Quick Start
+## Quick Start Simple
 
 ```csharp
 using cmd.interactive.menuscore.Bus;
