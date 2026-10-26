@@ -354,7 +354,7 @@ private static void Render(
         Console.WriteLine($"\n{options.ExtraText}");
 
     Console.WriteLine(
-        "\n↑/↓ Navigate · Space Confirm · Enter Enter Selection · Esc Back/Exit");
+        $"\n{options.UpIcon}{options.SeparatorUpDownIcon}{options.DownIcon} Navigate · Space Confirm · {options.EnterIcon} Enter Selection · {options.BackIcon} Back/Exit");
 
     Console.ResetColor();
 }

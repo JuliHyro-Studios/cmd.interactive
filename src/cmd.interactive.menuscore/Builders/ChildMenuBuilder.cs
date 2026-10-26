@@ -23,6 +23,11 @@ public sealed class ChildMenuBuilder
     public ChildMenuBuilder MenuSelectionStyle(MenuSelectionStyle style) { _options.Style.SelectionStyle = style; return this; }
     public ChildMenuBuilder CustomSelection(string prefix, string suffix = "") { _options.Style.SelectionStyle = cmd.interactive.menuscore.Enums.MenuSelectionStyle.Custom; _options.Style.CustomSelectionPrefix = prefix; _options.Style.CustomSelectionSuffix = suffix; return this; }
     public ChildMenuBuilder ExtraText(string? text) { _options.ExtraText = text; return this; }
+    public ChildMenuBuilder UpIcon(string icon) { _options.UpIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ChildMenuBuilder SeperatorUpDownIcon(string icon) { _options.SeparatorUpDownIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ChildMenuBuilder DownIcon(string icon) { _options.DownIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ChildMenuBuilder EnterIcon(string icon) { _options.EnterIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ChildMenuBuilder BackIcon(string icon) { _options.BackIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
     public ChildMenuBuilder HowToSelectionUp(Action action) { _options.SelectionUp = action ?? throw new ArgumentNullException(nameof(action)); return this; }
     public ChildMenuBuilder HowToSelectionDown(Action action) { _options.SelectionDown = action ?? throw new ArgumentNullException(nameof(action)); return this; }
     public ChildMenuBuilder HowToSelectSelection(Action action) { _options.SelectionChanged = action ?? throw new ArgumentNullException(nameof(action)); return this; }

@@ -154,6 +154,11 @@ Fluent methods:
 | `MenuSelectionStyle(MenuSelectionStyle style)` | Chooses a built-in selection marker. |
 | `CustomSelection(string prefix, string suffix = "")` | Uses a custom prefix and suffix around the selected entry. |
 | `ExtraText(string? text)` | Adds text below the menu entries. |
+| `UpIcon(string icon)` | Sets the displayed up-navigation icon in the help line. |
+| `SeperatorUpDownIcon(string icon)` | Sets the separator between the up and down icons. The API name intentionally follows the requested spelling `Seperator`. |
+| `DownIcon(string icon)` | Sets the displayed down-navigation icon in the help line. |
+| `EnterIcon(string icon)` | Sets the displayed Enter icon/label in the help line. |
+| `BackIcon(string icon)` | Sets the displayed back/exit icon/label in the help line. |
 | `DefaultExitButton(bool value)` | Enables or disables the automatically appended `Exit` entry. |
 | `HowToSelectionUp(Action action)` | Configures the selection-up callback. |
 | `HowToSelectionDown(Action action)` | Configures the selection-down callback. |
@@ -165,6 +170,8 @@ Fluent methods:
 | `ColorConfirm(string color)` | Sets the confirmation color setting. |
 | `ColorNormal(string color)` | Sets the normal text color. |
 | `Register()` | Validates required fields, adds the definition to the internal catalog, and returns the menu ID. |
+
+The help-line icons are configurable on both parent and child builders with `UpIcon`, `SeperatorUpDownIcon`, `DownIcon`, `EnterIcon`, and `BackIcon`. These values customize the displayed help line only; they do not bind keyboard keys. Defaults are `↑`, `/`, `↓`, `Enter`, and `Esc`. The `Space Confirm` label remains fixed.
 
 `ID` and `Title` must be supplied before `Register()`. `ID` is trimmed but is not required to be a dotted hierarchy path. The builder's options default to `DefaultExitButton = true`, `MenuSelectionStyle.Arrow`, selected color `Yellow`, confirmation color `Green`, and normal color `Gray`.
 
@@ -182,6 +189,11 @@ Fluent methods:
 | `MenuSelectionStyle(MenuSelectionStyle style)` | Chooses a built-in selection marker. |
 | `CustomSelection(string prefix, string suffix = "")` | Uses a custom selected-entry marker. |
 | `ExtraText(string? text)` | Adds text below the entries. |
+| `UpIcon(string icon)` | Sets the displayed up-navigation icon in the help line. |
+| `SeperatorUpDownIcon(string icon)` | Sets the separator between the up and down icons. The API name intentionally follows the requested spelling `Seperator`. |
+| `DownIcon(string icon)` | Sets the displayed down-navigation icon in the help line. |
+| `EnterIcon(string icon)` | Sets the displayed Enter icon/label in the help line. |
+| `BackIcon(string icon)` | Sets the displayed back/exit icon/label in the help line. |
 | `HowToSelectionUp(Action action)` | Configures the selection-up callback. |
 | `HowToSelectionDown(Action action)` | Configures the selection-down callback. |
 | `HowToSelectSelection(Action action)` | Configures the selection-changed callback. |
@@ -372,12 +384,12 @@ The default `Exit` entry is appended when the menu's `DefaultExitButton` option 
 - **Enter / Space**: process the selected entry. The default `Exit` entry ends the display loop. For other entries, the runtime first checks whether the interaction ID resolves to a direct child menu; if so, it invokes `EnterSelection` when configured and navigates to that child. Otherwise, it runs the registered action when found, then invokes the configured `EnterSelection` callback.
 - **Backspace**: calls `GoToParent()`.
 - **Escape**: attempts `GoBack()`. If no history exists, it attempts `GoToRoot()`. If the result is not `Navigated`, the display loop ends.
-- **`HowToSelectionUp` / `HowToSelectionDown`**: invoked as optional callbacks after the built-in selection movement.
-- **`HowToSelectSelection`**: maps to `SelectionChanged` and is invoked after selection movement.
-- **`HowToConfirSelection` / `HowToConfirmSelection`**: the callback is invoked when Enter or Space confirms an enabled selected entry, before the runtime handles the Exit entry, child-menu navigation, or registered action. It is separate from the action delegate.
-- **`HowToEnterSelection`**: optional extension callback invoked on the Enter processing paths described above.
+- **`HowToSelectionUp` / `HowToSelectionDown`**: the supplied `Action` is executed when the runtime processes the corresponding up/down navigation event.
+- **`HowToSelectSelection`**: the supplied `Action` is executed after the selected entry changes.
+- **`HowToConfirSelection` / `HowToConfirmSelection`**: the supplied `Action` is executed when Space confirms an enabled selected entry. It is a callback hook, not a key-binding API.
+- **`HowToEnterSelection`**: the supplied `Action` is executed when Enter processes the selected entry.
 
-The `HowToXxx` methods configure callbacks; the runtime still has built-in keyboard handling. Callback names and behavior should be read as implemented, not inferred solely from their names.
+The runtime detects keyboard input and invokes the matching configured callback. The callback body is the behavior to execute when that event occurs; it does not tell the runtime which key should trigger the event. The `HowToXxx` callbacks are optional and do not replace built-in navigation, confirmation, or action execution.
 
 ## 7. Navigation API
 
@@ -428,6 +440,11 @@ MenuBuilder.ParentMenuBuilder()
     .SupportChildMenu(true)
     .MenuSelectionStyle(MenuSelectionStyle.SquareBrackets)
     .ExtraText("Use the arrow keys to navigate.")
+    .UpIcon("↑")
+    .SeperatorUpDownIcon("/")
+    .DownIcon("↓")
+    .EnterIcon("↵")
+    .BackIcon("Esc")
     .DefaultExitButton(true)
     .Register();
 

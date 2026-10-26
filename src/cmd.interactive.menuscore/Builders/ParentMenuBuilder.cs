@@ -22,6 +22,11 @@ public sealed class ParentMenuBuilder
     public ParentMenuBuilder MenuSelectionStyle(MenuSelectionStyle style) { _options.Style.SelectionStyle = style; return this; }
     public ParentMenuBuilder CustomSelection(string prefix, string suffix = "") { _options.Style.SelectionStyle = cmd.interactive.menuscore.Enums.MenuSelectionStyle.Custom; _options.Style.CustomSelectionPrefix = prefix; _options.Style.CustomSelectionSuffix = suffix; return this; }
     public ParentMenuBuilder ExtraText(string? text) { _options.ExtraText = text; return this; }
+    public ParentMenuBuilder UpIcon(string icon) { _options.UpIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ParentMenuBuilder SeperatorUpDownIcon(string icon) { _options.SeparatorUpDownIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ParentMenuBuilder DownIcon(string icon) { _options.DownIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ParentMenuBuilder EnterIcon(string icon) { _options.EnterIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
+    public ParentMenuBuilder BackIcon(string icon) { _options.BackIcon = icon ?? throw new ArgumentNullException(nameof(icon)); return this; }
     public ParentMenuBuilder DefaultExitButton(bool value) { _options.DefaultExitButton = value; return this; }
     public ParentMenuBuilder HowToSelectionUp(Action action) { _options.SelectionUp = action ?? throw new ArgumentNullException(nameof(action)); return this; }
     public ParentMenuBuilder HowToSelectionDown(Action action) { _options.SelectionDown = action ?? throw new ArgumentNullException(nameof(action)); return this; }

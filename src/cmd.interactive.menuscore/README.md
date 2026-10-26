@@ -3,7 +3,10 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/JuliHyro-Studios/cmd.interactive/master/Assets/Brand/banner.png" alt="CMD Interactive Library Banner" width="100%">
 </p>
-
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JuliHyro-Studios/cmd.interactive/master/Assets/Brand/demo.png" alt="Note: This is a demo image from a project, provided for reference purposes only." width="100%">
+  <strong>Note: This is a demo image from a project, provided for reference purposes only</strong>
+</p>
 <p align="center">
   <strong>Core Component of CMD Interactive Library</strong>
 </p>
@@ -153,3 +156,21 @@ All `HowToXxx` callbacks are optional. Leaving them unconfigured does not disabl
 - **`Escape`**: Navigate backward through the navigation history. At the root menu, return to the root and end the session if no further navigation is possible.
 
 Configured callbacks are invoked as extension hooks after their corresponding keyboard operations. They are optional and are not required for the default behaviors to work.
+
+## Configurable Help-Line Icons
+
+Both `ParentMenuBuilder` and `ChildMenuBuilder` support these fluent APIs:
+
+```csharp
+.UpIcon("↑")
+.SeperatorUpDownIcon("/")
+.DownIcon("↓")
+.EnterIcon("↵")
+.BackIcon("Esc")
+```
+
+They customize the icons/labels rendered in the menu help line. They do **not** configure which keyboard keys the runtime listens for. The default help line is built from these values; the `Space Confirm` label remains fixed.
+
+## `HowToXxx` Callback Semantics
+
+`HowToSelectionUp`, `HowToSelectionDown`, `HowToSelectSelection`, `HowToConfirSelection` / `HowToConfirmSelection`, and `HowToEnterSelection` accept `Action` callbacks. The runtime handles keyboard input and invokes the matching callback when that event occurs. Put the behavior you want executed inside the callback. These callbacks are event hooks, not key-binding declarations, and they do not replace the built-in menu behavior.
